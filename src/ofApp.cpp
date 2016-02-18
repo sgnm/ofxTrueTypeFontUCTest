@@ -1,13 +1,21 @@
 #include "ofApp.h"
 #include "ofxTrueTypeFontUC.h"
+#include "ofxTween.h"
 
+//font
 ofxTrueTypeFontUC myFont;
 string sampleString;
 vector<ofPath> characters;
-vector<ofMesh> mesh;
+vector<ofVboMesh> mesh;
+vector<ofVec3f> vert;
+
+//tween
+ofxTween tween;
+ofxEasingBounce easing_bounce;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    //font
 //    myFont.loadFont("KozGoPr6N-ExtraLight.otf", 64, true, true);
     myFont.loadFont("ヒラギノ丸ゴ Pro W4.otf", 128, true, true);
     
@@ -17,15 +25,36 @@ void ofApp::setup(){
     for(int i = 0; i < characters.size(); i++){
         mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
     }
+    
+    //tween
+    tween.setParameters(1,easing_bounce, ofxTween::easeOut, 10.0, 1.0, 1000, 1000);
+    
+    //頂点配列を別の配列vertに格納してる
+    for(int i = 0; i < mesh[0].getVertices().size(); i++){
+        ofVec3f v = ofVec3f(mesh[0].getVertices()[i]);
+        vert.push_back(v);
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    tween.update();
     
+    for(int i = 0; i < mesh[0].getVertices().size(); i++){
+        ofVec3f v = vert[i];
+        v = v * tween.getTarget(0);
+    
+        mesh[0].setVertex(i, v);
+    }
+
+    if(ofGetFrameNum() % 60){
+        //メッシュリセット処理
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    ofBackground(0);
     string fpsStr = "frame rate: " + ofToString(ofGetFrameRate(), 2);
     ofDrawBitmapStringHighlight(fpsStr, 20, 20);
     
@@ -40,6 +69,7 @@ void ofApp::draw(){
         }
     ofPopMatrix();
     //draw------------------------------------------------
+    
 }
 
 
