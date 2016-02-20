@@ -41,7 +41,7 @@ void ofApp::setup(){
     
     for(int i = 0; i < characters.size(); i++){
         for(int j = 0; j < mesh[i].getVertices().size(); j++){
-            int n = ofRandom(-300, 300);
+            int n = ofRandom(-2, 2);
             ran.push_back(n);
             
             static float pi;
@@ -58,30 +58,12 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-//    tween.update();
-    
     for(int i = 0; i < mesh.size(); i++){
         for(int j = 0; j < mesh[i].getVertices().size(); j++){
-//            ofVec3f v = newMesh[i].getVertices()[j];
-////            v = v * tween.update() + ran[j];
-//            mesh[i].setVertex(j, v);
-            
-            ofVec3f pos = newMesh[i].getVertices()[j];
+            ofVec3f pos = newMesh[i].getVertices()[j] + ran[j];
             ofVec3f endPos = mesh[i].getVertices()[j];
-            pos += (endPos - pos) * ofRandom(0.1, 0.3);
+            pos += (endPos - pos) * 0.2;
             newMesh[i].setVertex(j, pos);
-        }
-    }
-
-    //アニメーションリセット処理
-    if(tween.isCompleted() && ofGetFrameNum() % 120 == 0){
-//        tween.setParameters(1,easing_bounce, ofxTween::easeOut, 10.0, 1.0, 500, 500);
-        ran.clear();
-        for(int i = 0; i < mesh.size(); i++){
-            for(int j = 0; j < mesh[i].getVertices().size(); j++){
-                int n = ofRandom(-10, 10);
-                ran.push_back(n);
-            }
         }
     }
 }
@@ -124,6 +106,22 @@ void ofApp::keyPressed(int key){
     }
     if(key == OF_KEY_LEFT){
         transTween.setParameters(2, easing_bounce, ofxTween::easeOut, 0.0, -300.0, 1000, 500);
+    }
+    if(key == OF_KEY_RETURN){
+        //テキストアニメーションリセット処理
+        ran.clear();
+        for(int i = 0; i < mesh.size(); i++){
+            for(int j = 0; j < mesh[i].getVertices().size(); j++){
+                int n = ofRandom(-2, 2);
+                ran.push_back(n);
+                
+                static float pi;
+                float rad = ofRandom(300, 500);
+                ofVec2f p = ofVec2f(rad * cos(pi), rad * sin(pi));
+                newMesh[i].setVertex(j, mesh[i].getVertex(j) + ofVec3f(p.x, p.y, 0));
+                pi += 0.01;
+            }
+        }
     }
 }
 
