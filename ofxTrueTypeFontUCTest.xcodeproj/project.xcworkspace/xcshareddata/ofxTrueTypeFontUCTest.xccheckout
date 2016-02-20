@@ -22,9 +22,9 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>6B5D1DE462D521A98972DF70F1147E20268C546A</key>
-		<string>../../../../../addons/ofxTween</string>
+		<string>../../../addons/ofxTween</string>
 		<key>6E85F585BA7940AD33F8E74F0EE05D55511194B6</key>
-		<string>../../../../../addons/ofxTrueTypeFontUC</string>
+		<string>../../../addons/ofxTrueTypeFontUC</string>
 		<key>77EE57552051957C6273267F2A71C904FAA547BB</key>
 		<string>../..</string>
 	</dict>

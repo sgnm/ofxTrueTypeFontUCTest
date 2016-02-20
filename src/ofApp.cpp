@@ -2,6 +2,9 @@
 #include "ofxTrueTypeFontUC.h"
 #include "ofxTween.h"
 
+#define W 720
+#define H 480
+
 //font
 ofxTrueTypeFontUC myFont;
 string sampleString;
@@ -13,6 +16,7 @@ vector<int> ran;
 //tween
 ofxTween tween;
 ofxEasingQuint easing_bounce;
+ofxTween transTween;
 
 //capture
 ofImage img;
@@ -31,33 +35,47 @@ void ofApp::setup(){
     
     for(int i = 0; i < characters.size(); i++){
         mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
-        for(int j = 0; j < mesh[i].getVertices().size(); j++){
-            int n = ofRandom(-10, 10);
-            ran.push_back(n);
-        }
     }
     
     newMesh = mesh; //元mesh->変形する為のnewMeshにコピー
     
+    for(int i = 0; i < characters.size(); i++){
+        for(int j = 0; j < mesh[i].getVertices().size(); j++){
+            int n = ofRandom(-300, 300);
+            ran.push_back(n);
+            
+            static float pi;
+            float rad = ofRandom(300, 500);
+            ofVec2f p = ofVec2f(rad * cos(pi), rad * sin(pi));
+            newMesh[i].setVertex(j, mesh[i].getVertex(j) + ofVec3f(p.x, p.y, 0));
+            pi += 0.01;
+        }
+    }
+    
     //tween
-    tween.setParameters(1,easing_bounce, ofxTween::easeOut, 2.0, 1.0, 1000, 500);
+    tween.setParameters(1, easing_bounce, ofxTween::easeOut, 2.0, 1.0, 1000, 500);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    tween.update();
+//    tween.update();
     
     for(int i = 0; i < mesh.size(); i++){
         for(int j = 0; j < mesh[i].getVertices().size(); j++){
-            ofVec3f v = newMesh[i].getVertices()[j];
-            v = v * tween.getTarget(0) + ran[j];
-            mesh[i].setVertex(j, v);
+//            ofVec3f v = newMesh[i].getVertices()[j];
+////            v = v * tween.update() + ran[j];
+//            mesh[i].setVertex(j, v);
+            
+            ofVec3f pos = newMesh[i].getVertices()[j];
+            ofVec3f endPos = mesh[i].getVertices()[j];
+            pos += (endPos - pos) * ofRandom(0.1, 0.3);
+            newMesh[i].setVertex(j, pos);
         }
     }
 
     //アニメーションリセット処理
     if(tween.isCompleted() && ofGetFrameNum() % 120 == 0){
-        tween.setParameters(1,easing_bounce, ofxTween::easeOut, 10.0, 1.0, 500, 500);
+//        tween.setParameters(1,easing_bounce, ofxTween::easeOut, 10.0, 1.0, 500, 500);
         ran.clear();
         for(int i = 0; i < mesh.size(); i++){
             for(int j = 0; j < mesh[i].getVertices().size(); j++){
@@ -76,23 +94,22 @@ void ofApp::draw(){
     
     //draw------------------------------------------------
     ofPushMatrix();
-    ofTranslate(100, 300);
+    ofTranslate(W/2, H/2);
+    ofTranslate(transTween.update(), 0);
         for(int i = 0; i < mesh.size(); i++){
-            mesh[i].drawVertices();
-            ofTranslate(0, 300);
-            mesh[i].drawWireframe();
-            ofTranslate(100, -300);
+            newMesh[i].drawWireframe();
         }
     ofPopMatrix();
     //draw------------------------------------------------
     
+    //grab screen-----------------------------------------
     if(bSnapshot){
-        img.grabScreen(0, 0, 720, 480);
+        img.grabScreen(0, 0, W, H);
         string fileName = "snapshot_" + ofToString(10000 + snapCounter) + ".png";
         img.save(fileName);
         snapCounter++;
-//        bSnapshot = false;
     }
+    //grab screen-----------------------------------------
     
 }
 
@@ -102,6 +119,12 @@ void ofApp::keyPressed(int key){
     if(key == 'f') ofToggleFullscreen();
     if(key == 'r') bSnapshot = true;
     if(key == 's') bSnapshot = false;
+    if(key == OF_KEY_RIGHT){
+        transTween.setParameters(1, easing_bounce, ofxTween::easeOut, 0.0, 300.0, 1000, 500);
+    }
+    if(key == OF_KEY_LEFT){
+        transTween.setParameters(2, easing_bounce, ofxTween::easeOut, 0.0, -300.0, 1000, 500);
+    }
 }
 
 //--------------------------------------------------------------
