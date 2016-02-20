@@ -6,12 +6,13 @@
 ofxTrueTypeFontUC myFont;
 string sampleString;
 vector<ofPath> characters;
-vector<ofVboMesh> mesh;
-vector<ofVec3f> vert;
+vector<ofMesh> mesh;
+vector<ofMesh> newMesh;
+vector<int> ran;
 
 //tween
 ofxTween tween;
-ofxEasingBounce easing_bounce;
+ofxEasingQuint easing_bounce;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -24,31 +25,40 @@ void ofApp::setup(){
     
     for(int i = 0; i < characters.size(); i++){
         mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
+        for(int j = 0; j < mesh[i].getVertices().size(); j++){
+            int n = ofRandom(-10, 10);
+            ran.push_back(n);
+        }
     }
+    
+    newMesh = mesh; //元mesh->変形する為のnewMeshにコピー
     
     //tween
-    tween.setParameters(1,easing_bounce, ofxTween::easeOut, 10.0, 1.0, 1000, 1000);
-    
-    //頂点配列を別の配列vertに格納してる
-    for(int i = 0; i < mesh[0].getVertices().size(); i++){
-        ofVec3f v = ofVec3f(mesh[0].getVertices()[i]);
-        vert.push_back(v);
-    }
+    tween.setParameters(1,easing_bounce, ofxTween::easeOut, 2.0, 1.0, 1000, 500);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     tween.update();
     
-    for(int i = 0; i < mesh[0].getVertices().size(); i++){
-        ofVec3f v = vert[i];
-        v = v * tween.getTarget(0);
-    
-        mesh[0].setVertex(i, v);
+    for(int i = 0; i < mesh.size(); i++){
+        for(int j = 0; j < mesh[i].getVertices().size(); j++){
+            ofVec3f v = newMesh[i].getVertices()[j];
+            v = v * tween.getTarget(0) + ran[j];
+            mesh[i].setVertex(j, v);
+        }
     }
 
-    if(ofGetFrameNum() % 60){
-        //メッシュリセット処理
+    //アニメーションリセット処理
+    if(tween.isCompleted() && ofGetFrameNum() % 120 == 0){
+        tween.setParameters(1,easing_bounce, ofxTween::easeOut, 10.0, 1.0, 500, 500);
+        ran.clear();
+        for(int i = 0; i < mesh.size(); i++){
+            for(int j = 0; j < mesh[i].getVertices().size(); j++){
+                int n = ofRandom(-10, 10);
+                ran.push_back(n);
+            }
+        }
     }
 }
 
@@ -62,7 +72,7 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(100, 300);
         for(int i = 0; i < mesh.size(); i++){
-            mesh[i].draw();
+            mesh[i].drawVertices();
             ofTranslate(0, 300);
             mesh[i].drawWireframe();
             ofTranslate(100, -300);
