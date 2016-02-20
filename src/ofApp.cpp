@@ -14,6 +14,12 @@ vector<int> ran;
 ofxTween tween;
 ofxEasingQuint easing_bounce;
 
+//capture
+ofImage img;
+int snapCounter;
+string snapString;
+bool bSnapshot;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     //font
@@ -80,12 +86,22 @@ void ofApp::draw(){
     ofPopMatrix();
     //draw------------------------------------------------
     
+    if(bSnapshot){
+        img.grabScreen(0, 0, 720, 480);
+        string fileName = "snapshot_" + ofToString(10000 + snapCounter) + ".png";
+        img.save(fileName);
+        snapCounter++;
+//        bSnapshot = false;
+    }
+    
 }
 
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == 'f') ofToggleFullscreen();
+    if(key == 'r') bSnapshot = true;
+    if(key == 's') bSnapshot = false;
 }
 
 //--------------------------------------------------------------
