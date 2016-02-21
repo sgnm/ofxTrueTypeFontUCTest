@@ -7,6 +7,9 @@
 #define W 720
 #define H 480
 #define NUM 10
+#define FROM 500
+#define TO 0
+#define DURATION 1000
 
 //font
 ofxTrueTypeFontUC myFont;
@@ -42,9 +45,6 @@ void ofApp::setup(){
     myFont.loadFont("ヒラギノ丸ゴ Pro W4.otf", 128, true, true);
     
     setupMesh();
-    
-    //tween
-    tween.setParameters(1, easing_bounce, ofxTween::easeOut, 2.0, 1.0, 1000, 500);
     
     dir.listDir("");
     for(int i = 0; i < dir.size(); i++){
@@ -130,23 +130,26 @@ void ofApp::keyPressed(int key){
     if(key == 'f') ofToggleFullscreen();
     if(key == 'r') bSnapshot = true;
     if(key == 's') bSnapshot = false;
-    if(key == 'c'){
-        bDrawCircle = !bDrawCircle;
+    if(key == 'c') bDrawCircle = !bDrawCircle;
+    if(key == 't'){
+        transXtween.setParameters(1, easing_bounce, ofxTween::easeOut, ofRandom(-FROM, FROM), ofRandom(-100, 100), DURATION, 0);
+        transYtween.setParameters(1, easing_bounce, ofxTween::easeOut, ofRandom(-FROM, FROM), ofRandom(-100, 100), DURATION, 0);
+        setupMesh();
     }
     if(key == OF_KEY_RIGHT){
-        transXtween.setParameters(1, easing_bounce, ofxTween::easeOut, 500.0, 0.0, 1000, 0);
+        transXtween.setParameters(1, easing_bounce, ofxTween::easeOut, FROM, TO, DURATION, 0);
         setupMesh();
     }
     if(key == OF_KEY_LEFT){
-        transXtween.setParameters(2, easing_bounce, ofxTween::easeOut, -500.0, 0.0, 1000, 0);
+        transXtween.setParameters(2, easing_bounce, ofxTween::easeOut, -FROM, TO, DURATION, 0);
         setupMesh();
     }
     if(key == OF_KEY_UP){
-        transYtween.setParameters(1, easing_bounce, ofxTween::easeOut, -500.0, 0.0, 1000, 0);
+        transYtween.setParameters(1, easing_bounce, ofxTween::easeOut, -FROM, TO, DURATION, 0);
         setupMesh();
     }
     if(key == OF_KEY_DOWN){
-        transYtween.setParameters(2, easing_bounce, ofxTween::easeOut, 500.0, 0.0, 1000, 0);
+        transYtween.setParameters(2, easing_bounce, ofxTween::easeOut, FROM, TO, DURATION, 0);
         setupMesh();
     }
     if(key == OF_KEY_RETURN){
