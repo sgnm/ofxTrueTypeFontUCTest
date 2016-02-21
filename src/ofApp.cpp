@@ -1,6 +1,7 @@
 #include "ofApp.h"
 #include "ofxTrueTypeFontUC.h"
 #include "ofxTween.h"
+#include "Lyrics.h"
 
 #define W 720
 #define H 480
@@ -13,6 +14,7 @@ vector<ofMesh> mesh;
 vector<ofMesh> newMesh;
 vector<int> ran;
 ofPoint center;
+Lyrics lyrics;
 
 //tween
 ofxTween tween;
@@ -31,7 +33,7 @@ void ofApp::setup(){
 //    myFont.loadFont("KozGoPr6N-ExtraLight.otf", 64, true, true);
     myFont.loadFont("ヒラギノ丸ゴ Pro W4.otf", 128, true, true);
     
-    sampleString = "あいうえお";
+    sampleString = lyrics.getNextString();
     characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
     center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
     
@@ -113,7 +115,7 @@ void ofApp::keyPressed(int key){
     }
     if(key == OF_KEY_RETURN){
         mesh.clear();
-        sampleString = "かきくけこ";
+        sampleString = lyrics.getNextString();
         characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
         center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
         
