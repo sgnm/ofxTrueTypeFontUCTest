@@ -112,6 +112,18 @@ void ofApp::keyPressed(int key){
         transTween.setParameters(2, easing_bounce, ofxTween::easeOut, 0.0, -300.0, 1000, 500);
     }
     if(key == OF_KEY_RETURN){
+        mesh.clear();
+        sampleString = "かきくけこ";
+        characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
+        center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
+        
+        
+        for(int i = 0; i < characters.size(); i++){
+            mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
+        }
+
+        newMesh = mesh; //元mesh->変形する為のnewMeshにコピー
+        
         //テキストアニメーションリセット処理
         ran.clear();
         for(int i = 0; i < mesh.size(); i++){
