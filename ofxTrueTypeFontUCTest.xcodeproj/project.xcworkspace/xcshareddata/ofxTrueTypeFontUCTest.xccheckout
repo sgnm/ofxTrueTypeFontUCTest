@@ -16,6 +16,8 @@
 		<string>https://github.com/hironishihara/ofxTrueTypeFontUC.git</string>
 		<key>77EE57552051957C6273267F2A71C904FAA547BB</key>
 		<string>https://github.com/sgnm/ofxTrueTypeFontUCTest.git</string>
+		<key>79A833A90269CC0554692BBC52B0693FDD0370F5</key>
+		<string>https://github.com/satoruhiga/ofxExportImageSequence.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>ofxTrueTypeFontUCTest.xcodeproj</string>
@@ -27,6 +29,8 @@
 		<string>../../../addons/ofxTrueTypeFontUC</string>
 		<key>77EE57552051957C6273267F2A71C904FAA547BB</key>
 		<string>../..</string>
+		<key>79A833A90269CC0554692BBC52B0693FDD0370F5</key>
+		<string>../../../addons/ofxExportImageSequence</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/sgnm/ofxTrueTypeFontUCTest.git</string>
@@ -36,6 +40,14 @@
 	<string>77EE57552051957C6273267F2A71C904FAA547BB</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>79A833A90269CC0554692BBC52B0693FDD0370F5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxExportImageSequence</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

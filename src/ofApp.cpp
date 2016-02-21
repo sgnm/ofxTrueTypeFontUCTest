@@ -3,6 +3,7 @@
 #include "ofxTween.h"
 #include "Lyrics.h"
 #include "CircleAnimation.h"
+#include "ImageSaver.h"
 
 #define W 720
 #define H 480
@@ -33,7 +34,7 @@ bool bDrawCircle;
 CircleAnimation circleAnim[NUM];
 
 //capture
-ofImage img;
+ImageSaver img;
 int snapCounter;
 string snapString;
 bool bSnapshot;
@@ -120,7 +121,7 @@ void ofApp::draw(){
     if(bSnapshot){
         img.grabScreen(0, 0, W, H);
         string fileName = dirName + "/" + ofToString(10000 + snapCounter) + ".png";
-        img.save(fileName);
+        img.saveThreaded(fileName);
         snapCounter++;
     }
     //grab screen-----------------------------------------
