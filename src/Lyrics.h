@@ -47,12 +47,15 @@ public:
     
     string getNextString(){
         static int i = 0;
-        if(i >= _lyrics.size()) return "";
+        if(i >= _lyrics.size()) i = 0;
         _str = _lyrics.at(i);
         i++;
         return _str;
     }
     
+    const vector<string> circleLyrics = {
+        "厚","岸","国","縫","上","雷","川","汲","住","初","登","別","上","湧","別","旭","神",
+    };
 };
 
 

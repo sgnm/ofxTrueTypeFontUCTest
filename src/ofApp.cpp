@@ -2,9 +2,11 @@
 #include "ofxTrueTypeFontUC.h"
 #include "ofxTween.h"
 #include "Lyrics.h"
+#include "CircleAnimation.h"
 
 #define W 720
 #define H 480
+#define NUM 10
 
 //font
 ofxTrueTypeFontUC myFont;
@@ -24,6 +26,8 @@ ofxEasingQuint easing_bounce;
 ofxTween transXtween;
 ofxTween transYtween;
 bool bSwitchFont;
+bool bDrawCircle;
+CircleAnimation circleAnim[NUM];
 
 //capture
 ofImage img;
@@ -46,10 +50,20 @@ void ofApp::setup(){
     for(int i = 0; i < dir.size(); i++){
         fonts.push_back(dir.getName(i));
     }
+    
+    for (int i = 0; i < NUM; i++) {
+        circleAnim[i].setup(lyrics.circleLyrics, 200, 200);
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    if(bDrawCircle){
+        for(int i = 0; i < NUM; i++){
+            circleAnim[i].update(1.5);
+        }
+    }
+    
     if(!bSwitchFont){
         for(int i = 0; i < mesh.size(); i++){
             for(int j = 0; j < mesh[i].getVertices().size(); j++){
@@ -82,6 +96,11 @@ void ofApp::draw(){
     //draw------------------------------------------------
     ofPushMatrix();
     ofTranslate(W/2, H/2);
+    if(bDrawCircle){
+        for(int i = 0; i < NUM; i++){
+            circleAnim[i].draw();
+        }
+    }
     ofTranslate(-center.x, center.y); //中心に移動
     ofTranslate(transXtween.update(), transYtween.update());
         for(int i = 0; i < mesh.size(); i++){
@@ -111,6 +130,9 @@ void ofApp::keyPressed(int key){
     if(key == 'f') ofToggleFullscreen();
     if(key == 'r') bSnapshot = true;
     if(key == 's') bSnapshot = false;
+    if(key == 'c'){
+        bDrawCircle = !bDrawCircle;
+    }
     if(key == OF_KEY_RIGHT){
         transXtween.setParameters(1, easing_bounce, ofxTween::easeOut, 500.0, 0.0, 1000, 0);
         setupMesh();
