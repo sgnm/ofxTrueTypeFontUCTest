@@ -33,29 +33,7 @@ void ofApp::setup(){
 //    myFont.loadFont("KozGoPr6N-ExtraLight.otf", 64, true, true);
     myFont.loadFont("ヒラギノ丸ゴ Pro W4.otf", 128, true, true);
     
-    sampleString = lyrics.getNextString();
-    characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
-    center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
-    
-    
-    for(int i = 0; i < characters.size(); i++){
-        mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
-    }
-    
-    newMesh = mesh; //元mesh->変形する為のnewMeshにコピー
-    
-    for(int i = 0; i < characters.size(); i++){
-        for(int j = 0; j < mesh[i].getVertices().size(); j++){
-            int n = ofRandom(-2, 2);
-            ran.push_back(n);
-            
-            static float pi;
-            float rad = ofRandom(300, 500);
-            ofVec2f p = ofVec2f(rad * cos(pi), rad * sin(pi));
-            newMesh[i].setVertex(j, mesh[i].getVertex(j) + ofVec3f(p.x, p.y, 0));
-            pi += 0.01;
-        }
-    }
+    setupMesh();
     
     //tween
     tween.setParameters(1, easing_bounce, ofxTween::easeOut, 2.0, 1.0, 1000, 500);
@@ -115,30 +93,35 @@ void ofApp::keyPressed(int key){
     }
     if(key == OF_KEY_RETURN){
         mesh.clear();
-        sampleString = lyrics.getNextString();
-        characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
-        center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
-        
-        
-        for(int i = 0; i < characters.size(); i++){
-            mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
-        }
+        setupMesh();
+    }
+}
 
-        newMesh = mesh; //元mesh->変形する為のnewMeshにコピー
-        
-        //テキストアニメーションリセット処理
-        ran.clear();
-        for(int i = 0; i < mesh.size(); i++){
-            for(int j = 0; j < mesh[i].getVertices().size(); j++){
-                int n = ofRandom(-2, 2);
-                ran.push_back(n);
-                
-                static float pi;
-                float rad = ofRandom(300, 500);
-                ofVec2f p = ofVec2f(rad * cos(pi), rad * sin(pi));
-                newMesh[i].setVertex(j, mesh[i].getVertex(j) + ofVec3f(p.x, p.y, 0));
-                pi += 0.01;
-            }
+//--------------------------------------------------------------
+void ofApp::setupMesh(){
+    sampleString = lyrics.getNextString();
+    characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
+    center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
+    
+    
+    for(int i = 0; i < characters.size(); i++){
+        mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
+    }
+    
+    newMesh = mesh; //元mesh->変形する為のnewMeshにコピー
+    
+    //テキストアニメーションリセット処理
+    ran.clear();
+    for(int i = 0; i < mesh.size(); i++){
+        for(int j = 0; j < mesh[i].getVertices().size(); j++){
+            int n = ofRandom(-2, 2);
+            ran.push_back(n);
+            
+            static float pi;
+            float rad = ofRandom(300, 500);
+            ofVec2f p = ofVec2f(rad * cos(pi), rad * sin(pi));
+            newMesh[i].setVertex(j, mesh[i].getVertex(j) + ofVec3f(p.x, p.y, 0));
+            pi += 0.01;
         }
     }
 }

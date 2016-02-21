@@ -6,6 +6,7 @@ class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
+        void setupMesh();
 		void update();
 		void draw();
 
