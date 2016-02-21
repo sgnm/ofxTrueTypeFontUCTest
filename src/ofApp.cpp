@@ -12,6 +12,7 @@ vector<ofPath> characters;
 vector<ofMesh> mesh;
 vector<ofMesh> newMesh;
 vector<int> ran;
+ofPoint center;
 
 //tween
 ofxTween tween;
@@ -32,6 +33,8 @@ void ofApp::setup(){
     
     sampleString = "あいうえお";
     characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
+    center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
+    
     
     for(int i = 0; i < characters.size(); i++){
         mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
@@ -77,6 +80,7 @@ void ofApp::draw(){
     //draw------------------------------------------------
     ofPushMatrix();
     ofTranslate(W/2, H/2);
+    ofTranslate(-center.x, center.y); //中心に移動
     ofTranslate(transTween.update(), 0);
         for(int i = 0; i < mesh.size(); i++){
             newMesh[i].drawWireframe();
