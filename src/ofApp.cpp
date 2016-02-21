@@ -19,7 +19,8 @@ Lyrics lyrics;
 //tween
 ofxTween tween;
 ofxEasingQuint easing_bounce;
-ofxTween transTween;
+ofxTween transXtween;
+ofxTween transYtween;
 
 //capture
 ofImage img;
@@ -61,7 +62,7 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(W/2, H/2);
     ofTranslate(-center.x, center.y); //中心に移動
-    ofTranslate(transTween.update(), 0);
+    ofTranslate(transXtween.update(), transYtween.update());
         for(int i = 0; i < mesh.size(); i++){
             newMesh[i].drawWireframe();
         }
@@ -86,19 +87,29 @@ void ofApp::keyPressed(int key){
     if(key == 'r') bSnapshot = true;
     if(key == 's') bSnapshot = false;
     if(key == OF_KEY_RIGHT){
-        transTween.setParameters(1, easing_bounce, ofxTween::easeOut, 0.0, 300.0, 1000, 500);
+        transXtween.setParameters(1, easing_bounce, ofxTween::easeOut, 500.0, 0.0, 1000, 0);
+        setupMesh();
     }
     if(key == OF_KEY_LEFT){
-        transTween.setParameters(2, easing_bounce, ofxTween::easeOut, 0.0, -300.0, 1000, 500);
+        transXtween.setParameters(2, easing_bounce, ofxTween::easeOut, -500.0, 0.0, 1000, 0);
+        setupMesh();
+    }
+    if(key == OF_KEY_UP){
+        transYtween.setParameters(1, easing_bounce, ofxTween::easeOut, -500.0, 0.0, 1000, 0);
+        setupMesh();
+    }
+    if(key == OF_KEY_DOWN){
+        transYtween.setParameters(2, easing_bounce, ofxTween::easeOut, 500.0, 0.0, 1000, 0);
+        setupMesh();
     }
     if(key == OF_KEY_RETURN){
-        mesh.clear();
         setupMesh();
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::setupMesh(){
+    mesh.clear();
     sampleString = lyrics.getNextString();
     characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
     center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
