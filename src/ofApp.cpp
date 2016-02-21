@@ -15,12 +15,15 @@ vector<ofMesh> newMesh;
 vector<int> ran;
 ofPoint center;
 Lyrics lyrics;
+ofDirectory dir;
+vector<string> fonts;
 
 //tween
 ofxTween tween;
 ofxEasingQuint easing_bounce;
 ofxTween transXtween;
 ofxTween transYtween;
+bool bSwitchFont;
 
 //capture
 ofImage img;
@@ -38,16 +41,34 @@ void ofApp::setup(){
     
     //tween
     tween.setParameters(1, easing_bounce, ofxTween::easeOut, 2.0, 1.0, 1000, 500);
+    
+    dir.listDir("");
+    for(int i = 0; i < dir.size(); i++){
+        fonts.push_back(dir.getName(i));
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    for(int i = 0; i < mesh.size(); i++){
-        for(int j = 0; j < mesh[i].getVertices().size(); j++){
-            ofVec3f pos = newMesh[i].getVertices()[j] + ran[j];
-            ofVec3f endPos = mesh[i].getVertices()[j];
-            pos += (endPos - pos) * 0.2;
-            newMesh[i].setVertex(j, pos);
+    if(!bSwitchFont){
+        for(int i = 0; i < mesh.size(); i++){
+            for(int j = 0; j < mesh[i].getVertices().size(); j++){
+                ofVec3f pos = newMesh[i].getVertices()[j] + ran[j];
+                ofVec3f endPos = mesh[i].getVertices()[j];
+                pos += (endPos - pos) * 0.2;
+                newMesh[i].setVertex(j, pos);
+            }
+        }
+    }
+    
+    if(ofGetFrameNum() % 5 == 0 && bSwitchFont){
+        myFont.loadFont(fonts[ofRandom(0, fonts.size())], 128, true, true); //randomで
+        mesh.clear();
+        characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
+        center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
+        
+        for(int i = 0; i < characters.size(); i++){
+            mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
         }
     }
 }
@@ -64,7 +85,11 @@ void ofApp::draw(){
     ofTranslate(-center.x, center.y); //中心に移動
     ofTranslate(transXtween.update(), transYtween.update());
         for(int i = 0; i < mesh.size(); i++){
-            newMesh[i].drawWireframe();
+            if(bSwitchFont){
+                mesh[i].drawWireframe();
+            }else{
+                newMesh[i].drawWireframe();
+            }
         }
     ofPopMatrix();
     //draw------------------------------------------------
@@ -105,6 +130,12 @@ void ofApp::keyPressed(int key){
     if(key == OF_KEY_RETURN){
         setupMesh();
     }
+    if(key == ' '){
+        bSwitchFont = !bSwitchFont;
+        if(!bSwitchFont){
+            setupMesh();
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -113,7 +144,6 @@ void ofApp::setupMesh(){
     sampleString = lyrics.getNextString();
     characters = myFont.getStringAsPoints(sampleString); //文字列の長さ取得
     center = ofPoint(myFont.stringWidth(sampleString)/2, myFont.stringHeight(sampleString)/2);
-    
     
     for(int i = 0; i < characters.size(); i++){
         mesh.push_back(characters[i].getTessellation()); //文字をそれぞれメッシュ化し格納
