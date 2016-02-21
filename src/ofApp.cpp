@@ -38,6 +38,9 @@ int snapCounter;
 string snapString;
 bool bSnapshot;
 
+//utils
+string dirName;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     //font
@@ -116,7 +119,7 @@ void ofApp::draw(){
     //grab screen-----------------------------------------
     if(bSnapshot){
         img.grabScreen(0, 0, W, H);
-        string fileName = "snapshot_" + ofToString(10000 + snapCounter) + ".png";
+        string fileName = dirName + "/" + ofToString(10000 + snapCounter) + ".png";
         img.save(fileName);
         snapCounter++;
     }
@@ -128,7 +131,12 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == 'f') ofToggleFullscreen();
-    if(key == 'r') bSnapshot = true;
+    if(key == 'r'){
+        bSnapshot = true;
+        ofDirectory dir;
+        dirName = ofGetTimestampString("%Y%m%d%H%M%S");
+        dir.createDirectory(dirName);
+    }
     if(key == 's') bSnapshot = false;
     if(key == 'c') bDrawCircle = !bDrawCircle;
     if(key == 't'){
